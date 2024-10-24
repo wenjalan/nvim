@@ -8,14 +8,25 @@ vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 
 -- Custom keymaps
+-- Fast Scrolling
 vim.keymap.set('n', '<Up>', '10k')
 vim.keymap.set('n', '<Down>', '10j')
+
+-- NeoTree
+vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>')
+vim.keymap.set('n', '<leader>f', ':Neotree focus<CR>')
 
 -- Init plugins (nvim-plug)
 vim.call('plug#begin')
 
 -- OneDark Theme
 Plug 'navarasu/onedark.nvim'
+
+-- LuaLine
+Plug 'nvim-lualine/lualine.nvim'
+
+-- BufferLine (editor tabs, haven't figured out a good setup for this yet)
+-- Plug 'akinsho/bufferline.nvim'
 
 -- LSP & nvim-cmp
 Plug 'neovim/nvim-lspconfig'
@@ -35,10 +46,91 @@ Plug 'nvim-telescope/telescope.nvim'
 -- Treesitter
 Plug 'nvim-treesitter/nvim-treesitter'
 
+-- NeoTree
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-neo-tree/neo-tree.nvim'
+
 vim.call('plug#end')
 
 -- Set up OneDark Theme
 require('onedark').load()
+
+-- Set up LuaLine
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+
+-- Set up BufferLine (only for editor tabs)
+-- require('bufferline').setup {
+--     options = {
+--         mode = "tabs",
+--         separator_style = "thin",
+--         show_buffer_close_icons = true,
+--         show_close_icon = true,
+--         color_icons = true,
+--         enforce_regular_tabs = false,
+--         show_tab_indicators = true,
+--         always_show_bufferline = true,
+--         offsets = {
+--             {
+--                 filetype = "neo-tree",
+--                 text = "file explorer",
+--                 highlight = "directory",
+--                 separator = true
+--             }
+--         },
+--         indicator = {
+--             style = 'underline'
+--         },
+--         modified_icon = '●',
+--         close_icon = '',
+--         left_trunc_marker = '',
+--         right_trunc_marker = '',
+--         diagnostics = "nvim_lsp",
+--         diagnostics_indicator = function(count, level)
+--             local icon = level:match("error") and " " or " "
+--             return " " .. icon .. count
+--         end
+--     }
+-- }
 
 -- Set up Mason
 require("mason").setup()
@@ -168,3 +260,29 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+-- Set up Neo Tree
+-- Disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Neo-tree minimal setup
+require('neo-tree').setup({
+    enable_git_status = true,
+    window = {
+        width = 30,
+        mappings = {
+            ["o"] = "open",
+            ["<esc>"] = "cancel",
+        }
+    },
+    filesystem = {
+        follow_current_file = {
+			enabled = true,
+		},
+        filtered_items = {
+            hide_dotfiles = false,
+            hide_gitignored = false,
+        }
+    }
+})
