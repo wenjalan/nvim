@@ -1,6 +1,17 @@
 local vim = vim
 local Plug = vim.fn['plug#']
 
+-- Editor settings
+vim.o.number = true
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+
+-- Custom keymaps
+vim.keymap.set('n', '<Up>', '10k')
+vim.keymap.set('n', '<Down>', '10j')
+
+-- Init plugins (nvim-plug)
 vim.call('plug#begin')
 
 -- OneDark Theme
@@ -26,12 +37,10 @@ Plug 'nvim-treesitter/nvim-treesitter'
 
 vim.call('plug#end')
 
-vim.o.number = true
-vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.shiftwidth = 4
-
+-- Set up OneDark Theme
 require('onedark').load()
+
+-- Set up Mason
 require("mason").setup()
 
 -- Set up nvim-cmp.
